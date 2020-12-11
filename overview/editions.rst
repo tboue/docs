@@ -11,6 +11,14 @@ a device. The toolset covers two levels in device software development:
 
 -  MicroEJ Studio for application development
 
+.. raw:: html
+
+	<div class="figure align-center">
+		<video width="960" height="540" poster="https://developer.microej.com/wp-content/uploads/2020/04/preview-sdk.jpg" muted="on" controls="controls" >
+			<source src="https://www.microej.com/sdk_preview.mp4" type="video/mp4">
+		</video>
+	</div>
+
 The firmware will generally be produced by the device OEM, it includes
 all device drivers and a specific set of MicroEJ functionalities useful
 for application developers targeting this device.
