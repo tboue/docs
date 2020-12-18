@@ -1,27 +1,41 @@
+.. _platform-event-tracing:
+
+=============
+Event Tracing
+=============
+
+Introduction
+============
+
+A MicroEJ Platform can connect its own implementation of :ref:`event-tracing` by overriding the functions defined in the ``LLTRACE_impl.h`` file.
+
+MicroEJ also provides an Abstraction Layer implementation that redirects the events to :ref:`systemview` tool, 
+the real-time recording and visualization tool from `Segger <https://www.segger.com/>`_. It is perfect for a finer understanding of the runtime behavior by showing events sequence and duration.
 
 .. _systemview:
 
-==========
 SystemView
 ==========
 
 Principle
-=========
+---------
 
 SystemView is a real-time recording and visualization tool for embedded systems that reveals the true runtime behavior of an application, going far deeper than the system insights provided by debuggers. This is particularly effective when developing and working with complex embedded systems comprising multiple threads and interrupts: SystemView can ensure a system performs as designed, can track down inefficiencies, and show unintended interactions and resource conflicts, with a focus on the details of every single system tick.
 
-A specific SystemView extension made by MicroEJ allows to traces the OS tasks and the MicroEJ Java threads at the same time. This chapter explains how to add SystemView feature in a platform and how to setup it.
+A specific SystemView extension made by MicroEJ allows to trace both RTOS tasks and MicroEJ Java threads at the same time.
 
-.. note:: SystemView for MicroEJ is compatible with FreeRTOS 9 and FreeRTOS 10. 
+This section explains how to add SystemView in a MicroEJ Platform and how to connect it to a Board Support Package with FreeRTOS.
+
+.. note:: MicroEJ Abstraction Layer implementation for SystemView is compatible with FreeRTOS ``9`` and FreeRTOS ``10``. 
 
 References
-==========
+----------
 
 * https://www.segger.com/products/development-tools/systemview/
 * https://www.segger.com/downloads/jlink/UM08027
 
 Installation
-============
+------------
 
 SystemView consists on installing several items in the BSP. The following steps describe them and must be performed in right order. In case of SystemView is already available in the BSP, apply only modifications made by MicroEJ on SystemView files and SystemView for FreeRTOS files to enable MicroEJ Java threads monitoring.
 
@@ -42,14 +56,14 @@ SystemView consists on installing several items in the BSP. The following steps 
 9. Add a call to ``SYSVIEW_setMicroJVMTask(pvCreatedTask);`` just after creating the OS task which launch the MicroJvm. The handler to give is the one filled by ``xTaskCreate`` function.
 
 MicroJvm Task
-=============
+-------------
 
 The MicroJvm task is an OS task and has got a particular role: it manages the MicroEJ Java threads. As soon as the MicroEJ application is started (when calling ``SNI_startVM``), the jobs performed during the MicroJvm task (events, semaphores etc.) are dispatched to the current MicroEJ Java thread. By consequence, this task is useless when the MicroEJ application is running.
 
 SystemView for MicroEJ disables the visibility of the MicroJvm task when the MicroEJ application is running. It simplifies the SystemView client debugging.
 
 Task and Thread Names
-=====================
+---------------------
 
 To make a distinction between the OS tasks and the MicroEJ Java thread, a prefix is added to the task/thread name: "[OS] " or "[MEJ] ".
 
@@ -63,7 +77,7 @@ To make a distinction between the OS tasks and the MicroEJ Java thread, a prefix
 .. note:: SystemView limits the number of characters to 32. The prefix length is included in these 32 characters and by consequence the original task/thread name can be cropped.
 
 Task and Thread Priorities
-==========================
+--------------------------
 
 SystemView lists the tasks and threads according their priorities. However the priority notion has not the same signification when talking about tasks or threads: a thread priority depends on the MicroJvm task priority. 
 
@@ -76,20 +90,6 @@ To allow SystemView making this distinction, the priorities sent to SystemView c
 
 * it is an OS task: ``priority_sent = task_priority * 100``.
 * it is a MicroEJ Java thread: ``priority_sent = MicroJvm_task_priority * 100 + thread_priority``.
-
-Use
-===
-
-MicroEJ platforms can generate specific events that allow monitoring current Java thread executed, Java exceptions, Java allocations, etc.
-
-To enable MEJ32 tracing, in MicroEJ SDK:
-
-1. Click on your MicroEJ application project
-2. Run -> Run Configurations
-3. Select your configuration
-4. In the configuration tab:
-5. Target -> Debug
-6. Check: "Enable execution traces" and "Start execution traces automatically"
 
 ..
    | Copyright 2020, MicroEJ Corp. Content in this space is free 

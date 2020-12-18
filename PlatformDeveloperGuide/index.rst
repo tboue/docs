@@ -19,7 +19,7 @@ Platform Developer Guide
    fs
    hal
    device
-   systemView
+   trace
    simulation
    limitations
    appendix/index
